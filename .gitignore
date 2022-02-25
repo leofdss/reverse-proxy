@@ -1,1 +1,2 @@
-/config/letsencrypt
+/config/var/lib/letsencrypt
+/config/etc/letsencrypt
