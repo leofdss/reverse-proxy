@@ -1,0 +1,32 @@
+version: '3'
+
+networks:
+  proxy-reverse:
+    driver: bridge
+
+services:
+  nginx:
+    image: nginx:1.21
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./config/conf.d/:/etc/nginx/conf.d/:ro
+      - ./config/sites-enabled/:/etc/nginx/sites-enabled/:ro
+      - ./config/html/:/var/www/html/:ro
+      - ./config/letsencrypt/:/etc/letsencrypt/:ro
+    networks:
+      - proxy-reverse
+
+  certbot:
+    image: certbot/certbot:v1.23.0
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/nginx.conf:rw
+      - ./config/conf.d/:/etc/nginx/conf.d/:rw
+      - ./config/sites-enabled/:/etc/nginx/sites-enabled/:rw
+      - ./config/html/:/var/www/html/:rw
+      - ./config/letsencrypt/:/etc/letsencrypt/:rw
+    networks:
+      - proxy-reverse
